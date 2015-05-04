@@ -1,0 +1,24 @@
+#! /bin/bash
+
+# HOWTO: run using qsub [parameters] pi_machin.sge n_digits
+
+# SGE configuration parameters
+# shell to use
+#$ -S /bin/bash
+# start from current dir
+#$ -cwd
+# job name
+#$ -N pi_machin
+# join error and output
+#$ -j y
+# output filename
+#$ -o pi_machin.out
+# memory required
+#$ -l mem_free=100M
+# wall clock time
+#$ -l h_rt=0:20:00
+
+# Precision for the calculation (from command arg)
+scale=$1
+# Obtain PI and echo to output (calculate using bc)
+echo "scale=$scale; 16 * a (1/5) - 4 * a (1/239)" | bc -l

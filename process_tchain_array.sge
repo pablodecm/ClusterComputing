@@ -1,0 +1,33 @@
+#!/bin/sh
+#$ -S /bin/bash
+#$ -cwd
+#$ -N process_tchain
+#$ -t 1-20
+#$ -e log_files/$JOB_ID-$TASK_ID.err
+#$ -o log_files/$JOB_ID-$TASK_ID.out
+
+# set enviroment
+echo "Setting up CMSSW env (for modern ROOT and gcc)"
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+export SCRAM_ARCH=slc6_amd64_gcc491 
+# set area
+cd $CMS_USERAREA/releases/CMSSW_7_4_0/src
+eval `scramv1 runtime -sh`
+cd - &> /dev/null 
+echo "CMSSW setup completed"
+
+# add program to PATH
+PROGRAM_BIN="$PWD/program/bin"
+PATH=$PROGRAM_BIN:$PATH
+
+# path with the text filewith input file names
+INPUTFILESFILE="$PWD/inputfiles.txt"
+INPUTFILE=$(awk "NR==$SGE_TASK_ID" $INPUTFILESFILE)
+OUTPUTDIR="output_files/"
+OUTPUTFILE=$OUTPUTDIR"output"$(basename $INPUTFILE)
+
+echo "Input  File: "$INPUTFILE
+echo "Output File: "$OUTPUTFILE
+
+# execute
+process_tchain -i $INPUTFILE -o $OUTPUTFILE

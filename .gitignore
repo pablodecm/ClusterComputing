@@ -1,0 +1,6 @@
+*.jugdata
+*.pyc
+*.ipynb_checkpoints
+log_files
+text-data
+
